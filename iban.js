@@ -28,7 +28,8 @@
       lead: "Turn your account number into an IBAN, or look inside an IBAN to see the bank and account number. Then make a payment QR with one tap.",
       c1Title: "Account number → IBAN", lblBank: "Bank or wallet", lblAcct: "Account number",
       choose: "Search bank or wallet, e.g. Meezan…",
-      pickFromList: "Pick your bank from the suggestions under the search box.",
+      pickFromList: "Pick your bank from the list under the search box.",
+      noBank: "No bank found. Try another spelling.",
       jazzcashNoGen: "JazzCash IBANs contain 6 digits that are different for every account, so they can't be made from your mobile number. Open the JazzCash app → My Account → View Profile and copy your IBAN.",
       easypaisaMobile: "easypaisa IBANs use your easypaisa account number, not your mobile number. Open the easypaisa app → My Account and copy your IBAN (or enter the account number shown there).", groupBanks: "Banks", groupWallets: "Wallets & digital banks",
       acctHint: "Type it exactly as your bank shows it, including any branch code. Spaces and dashes are ignored.",
@@ -80,6 +81,7 @@
       c1Title: "اکاؤنٹ نمبر ← IBAN", lblBank: "بینک یا والٹ", lblAcct: "اکاؤنٹ نمبر",
       choose: "بینک یا والٹ تلاش کریں، مثلاً Meezan…",
       pickFromList: "تلاش کے خانے کے نیچے دی گئی فہرست سے اپنا بینک منتخب کریں۔",
+      noBank: "کوئی بینک نہیں ملا۔ دوسرے ہجے آزمائیں۔",
       jazzcashNoGen: "جاز کیش کے IBAN میں 6 ہندسے ہر اکاؤنٹ کے لیے مختلف ہوتے ہیں، اس لیے یہ موبائل نمبر سے نہیں بن سکتا۔ جاز کیش ایپ کھولیں ← My Account ← View Profile اور اپنا IBAN کاپی کریں۔",
       easypaisaMobile: "ایزی پیسہ کا IBAN آپ کے ایزی پیسہ اکاؤنٹ نمبر سے بنتا ہے، موبائل نمبر سے نہیں۔ ایزی پیسہ ایپ کھولیں ← My Account اور اپنا IBAN کاپی کریں (یا وہاں دیا گیا اکاؤنٹ نمبر لکھیں)۔", groupBanks: "بینک", groupWallets: "والٹس اور ڈیجیٹل بینک",
       acctHint: "اکاؤنٹ نمبر بالکل ویسا ہی لکھیں جیسا بینک دکھاتا ہے، برانچ کوڈ سمیت۔ خالی جگہ اور ڈیش کو نظرانداز کیا جاتا ہے۔",
@@ -129,24 +131,88 @@
   function clean(s) { return s.replace(/[\s-]/g, "").toUpperCase(); }
   function group(s) { return s.replace(/(.{4})/g, "$1 ").trim(); }
 
-  function fillBanks() {
-    var list = $("bankList");
+  var WALLETS = ["SADA", "JCMA", "TMFB"];
+  var picked = "", active = -1;
+
+  function norm(s) { return s.toLowerCase().replace(/[^a-z0-9]/g, ""); }
+
+  function renderList(query) {
+    var list = $("bankList"), q = norm(query || ""), groups = [[tr("groupBanks"), []], [tr("groupWallets"), []]];
     list.textContent = "";
-    $("bankSel").placeholder = tr("choose");
     BANK_LIST.forEach(function (b) {
-      var op = document.createElement("option");
-      op.value = b[1] + " (" + b[0] + ")";
-      list.appendChild(op);
+      if (!q || norm(b[1]).indexOf(q) >= 0 || norm(b[0]).indexOf(q) === 0) groups[WALLETS.indexOf(b[0]) >= 0 ? 1 : 0][1].push(b);
     });
+    var n = 0;
+    groups.forEach(function (g) {
+      if (!g[1].length) return;
+      var h = document.createElement("li");
+      h.className = "combo-group";
+      h.setAttribute("role", "presentation");
+      h.textContent = g[0];
+      list.appendChild(h);
+      g[1].forEach(function (b) {
+        var li = document.createElement("li");
+        li.className = "combo-opt";
+        li.id = "opt-" + b[0];
+        li.setAttribute("role", "option");
+        li.setAttribute("aria-selected", b[0] === picked ? "true" : "false");
+        li.dataset.code = b[0];
+        var name = document.createElement("span");
+        name.className = "combo-name";
+        name.textContent = b[1];
+        var code = document.createElement("span");
+        code.className = "combo-code";
+        code.textContent = b[0];
+        li.appendChild(name);
+        li.appendChild(code);
+        li.addEventListener("mousedown", function (e) { e.preventDefault(); choose(b[0]); });
+        list.appendChild(li);
+        n++;
+      });
+    });
+    if (!n) {
+      var e = document.createElement("li");
+      e.className = "combo-empty";
+      e.textContent = tr("noBank");
+      list.appendChild(e);
+    }
+    active = -1;
   }
 
-  function bankCode() {
-    var v = $("bankSel").value.trim(), m = /\(([A-Z]{4})\)$/.exec(v), up = v.toUpperCase();
-    if (m && NAMES[m[1]]) return m[1];
-    if (NAMES[up]) return up;
-    for (var i = 0; i < BANK_LIST.length; i++) if (BANK_LIST[i][1].toUpperCase() === up) return BANK_LIST[i][0];
-    return "";
+  function opts() { return $("bankList").querySelectorAll(".combo-opt"); }
+
+  function setActive(i) {
+    var o = opts();
+    if (!o.length) return;
+    active = (i + o.length) % o.length;
+    o.forEach(function (el, k) { el.classList.toggle("active", k === active); });
+    o[active].scrollIntoView({ block: "nearest" });
+    $("bankSel").setAttribute("aria-activedescendant", o[active].id);
   }
+
+  function openList(query) {
+    renderList(query);
+    $("bankList").hidden = false;
+    $("bankSel").setAttribute("aria-expanded", "true");
+  }
+
+  function closeList() {
+    $("bankList").hidden = true;
+    $("bankSel").setAttribute("aria-expanded", "false");
+    $("bankSel").removeAttribute("aria-activedescendant");
+  }
+
+  function choose(code) {
+    picked = code;
+    $("bankSel").value = NAMES[code];
+    closeList();
+    convert();
+    $("acct").focus();
+  }
+
+  function fillBanks() { $("bankSel").placeholder = tr("choose"); }
+
+  function bankCode() { return picked && $("bankSel").value === NAMES[picked] ? picked : ""; }
 
   function convert() {
     var acct = clean($("acct").value), code = bankCode(), msg = $("acctMsg"), out = $("out1");
@@ -225,9 +291,30 @@
     try { localStorage.setItem("rq-theme", mode); } catch (e) {}
   });
 
-  $("bankSel").addEventListener("input", convert);
-  $("bankSel").addEventListener("change", convert);
-  $("bankSel").addEventListener("focus", function () { this.select(); });
+  $("bankSel").addEventListener("input", function () {
+    var v = this.value.trim(), up = v.toUpperCase();
+    picked = "";
+    if (NAMES[up] && up.length === 4) picked = up;
+    openList(v);
+    convert();
+  });
+  $("bankSel").addEventListener("focus", function () { this.select(); openList(bankCode() ? "" : this.value); });
+  $("bankSel").addEventListener("click", function () { if ($("bankList").hidden) openList(bankCode() ? "" : this.value); });
+  $("bankSel").addEventListener("blur", function () {
+    closeList();
+    if (picked) this.value = NAMES[picked];
+    convert();
+  });
+  $("bankSel").addEventListener("keydown", function (e) {
+    var open = !$("bankList").hidden;
+    if (e.key === "ArrowDown") { e.preventDefault(); if (!open) openList(this.value); setActive(active + 1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); if (!open) openList(this.value); setActive(active - 1); }
+    else if (e.key === "Enter" && open) {
+      e.preventDefault();
+      var o = opts();
+      if (o.length) choose((o[active] || o[0]).dataset.code);
+    } else if (e.key === "Escape") closeList();
+  });
   $("acct").addEventListener("input", convert);
   $("ibanIn").addEventListener("input", decode);
   $("ibanIn").addEventListener("blur", function () { var c = clean(this.value); if (c) this.value = group(c); });

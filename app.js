@@ -429,7 +429,7 @@
     ctx.fillStyle = t.fg;
     ctx.globalAlpha = t.light ? .65 : .78;
     ctx.font = "600 24px " + SANS;
-    ctx.fillText("Any Pakistani bank app · JazzCash · easypaisa · SadaPay", W / 2, H - 56);
+    ctx.fillText("Scan with any banking app", W / 2, H - 56);
     ctx.globalAlpha = 1;
 
     $("dl").disabled = $("pr").disabled = $("copyPayload").disabled = !ok;
