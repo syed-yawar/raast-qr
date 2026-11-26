@@ -7,7 +7,7 @@
     CITI: "Citibank", DEUT: "Deutsche Bank", DUIB: "Dubai Islamic Bank", FAYS: "Faysal Bank",
     FINC: "ABHI Microfinance", FMFB: "HBL Microfinance", FWOM: "First Women Bank",
     HABB: "HBL", ICBK: "ICBC Pakistan", JCMA: "JazzCash",
-    JSBL: "JS Bank", KHYB: "Bank of Khyber", KMBL: "Khushhali Bank", MCBL: "MCB Bank",
+    JSBL: "JS Bank", KHYB: "Bank of Khyber", KHBL: "Khushhali Bank", KMBL: "Khushhali Bank", MCBL: "MCB Bank",
     MCIB: "MCB Islamic", MEZN: "Meezan Bank", MPBL: "HabibMetro", MSHQ: "Mashreq Bank",
     MUCB: "MCB Bank", NBPA: "NBP", NBPB: "NBP",
     NIBP: "NIB Bank", NRSP: "NRSP Bank", PAKB: "Pak Oman MFB", SADA: "SadaPay",

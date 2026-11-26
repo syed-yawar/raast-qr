@@ -23,6 +23,14 @@ Format version, static QR, scheme, the 24-character IBAN under tag `04`, and a C
 python3 -m http.server 8765
 ```
 
+## Test
+
+Bank-specific account-number rules are checked against account/IBAN pairs that Pakistani charities publish on their donation pages:
+
+```bash
+node tests/iban-vectors.test.js
+```
+
 ## Deploy
 
 Static assets on Cloudflare Workers:

@@ -9,14 +9,14 @@
     ["SIND", "Sindh Bank"], ["KHYB", "The Bank of Khyber"], ["MPBL", "Habib Metropolitan Bank"], ["SUMB", "Bank Makramah"],
     ["MCIB", "MCB Islamic Bank"], ["AIIN", "Al Baraka Bank"], ["SAUD", "Silkbank"], ["CITI", "Citibank"],
     ["DEUT", "Deutsche Bank"], ["ICBK", "ICBC Pakistan"], ["FWOM", "First Women Bank"], ["SAMB", "Samba Bank"],
-    ["MSHQ", "Mashreq Bank"], ["KMBL", "Khushhali Microfinance Bank"], ["FMFB", "HBL Microfinance Bank"],
+    ["MSHQ", "Mashreq Bank"], ["KHBL", "Khushhali Microfinance Bank"], ["FMFB", "HBL Microfinance Bank"],
     ["UMBL", "U Microfinance Bank"], ["APNA", "Apna Microfinance Bank"], ["NRSP", "NRSP Microfinance Bank"],
     ["FINC", "ABHI Microfinance Bank"], ["PAKB", "Pak Oman Microfinance Bank"],
     ["SADA", "SadaPay"], ["JCMA", "JazzCash (Mobilink Microfinance)"], ["TMFB", "easypaisa (Telenor Microfinance)"]
   ];
   var NAMES = {};
   BANK_LIST.forEach(function (b) { NAMES[b[0]] = b[1]; });
-  NAMES.MCBL = "MCB Bank"; NAMES.NBPB = "National Bank of Pakistan"; NAMES.TAMW = "easypaisa"; NAMES.SBPP = "State Bank of Pakistan";
+  NAMES.MCBL = "MCB Bank"; NAMES.NBPB = "National Bank of Pakistan"; NAMES.TAMW = "easypaisa"; NAMES.SBPP = "State Bank of Pakistan"; NAMES.KMBL = "Khushhali Microfinance Bank";
 
   var I18N = {
     en: {
@@ -32,8 +32,17 @@
       acctBad: "Only letters and numbers are allowed.",
       acctNeedBank: "Now choose your bank above.",
       acctNeedBankLong: "Choose your bank above. Some banks (like Allied Bank) show a branch code in front, which we can remove for you.",
-      noteBranch: "Removed the branch code ({b}); the IBAN uses the 16-digit account number.",
+      note_branch: "Removed the branch code ({b}); the IBAN uses the account number after it.",
+      note_bahl: "Bank Al Habib IBANs leave out the last check digit of the account number.",
+      note_jsbl: "Used {b} as the branch code; JS Bank IBANs put it in front of the account number.",
       ablNeed16: "Allied Bank IBANs use your 16-digit account number (usually starts with 0010), or 20 digits with the branch code in front. Find it in the myABL app or on your cheque book.",
+      bahlNeed17: "Bank Al Habib account numbers have 17 digits, like 1234-0081-012345-01-2. Please enter the full number.",
+      alfhFmt: "Enter your Bank Alfalah account number as the 4-digit branch code plus 10 digits (14 digits), or the 16-digit number from your app.",
+      ublFmt: "Enter your 12-digit or 16-digit UBL account number from the UBL app. Older 13-digit numbers can't be converted reliably.",
+      jsblFmt: "Enter your 4-digit JS Bank branch code followed by your account number.",
+      meznNeedBranch: "Meezan account numbers have 14 digits: the 4-digit branch code, then 10 digits. Please add your branch code in front.",
+      soneNeedBranch: "Soneri account numbers have 15 digits: the 4-digit branch code, then 11 digits. Please add your branch code in front.",
+      unsupported: "This bank builds IBANs in a way we can't calculate from the account number. Please copy the IBAN from your bank app or statement.",
       tooLongBank: "This account number is longer than 16 digits, and this bank's IBAN format isn't documented, so we can't calculate it safely. Please copy the IBAN from your bank app or statement.",
       acctOk: "IBAN calculated. Please double-check it (see below).",
       outIban: "IBAN", copy: "Copy", copied: "Copied!", makeQr: "Make QR with this IBAN →",
@@ -71,8 +80,17 @@
       acctBad: "صرف حروف اور ہندسے لکھیں۔",
       acctNeedBank: "اب اوپر سے اپنا بینک منتخب کریں۔",
       acctNeedBankLong: "اوپر سے اپنا بینک منتخب کریں۔ کچھ بینک (جیسے الائیڈ بینک) شروع میں برانچ کوڈ دکھاتے ہیں، جسے ہم خود ہٹا دیں گے۔",
-      noteBranch: "برانچ کوڈ ({b}) ہٹا دیا گیا؛ IBAN میں 16 ہندسوں کا اکاؤنٹ نمبر استعمال ہوتا ہے۔",
+      note_branch: "برانچ کوڈ ({b}) ہٹا دیا گیا؛ IBAN میں اس کے بعد والا اکاؤنٹ نمبر استعمال ہوتا ہے۔",
+      note_bahl: "بینک الحبیب کے IBAN میں اکاؤنٹ نمبر کا آخری چیک ہندسہ شامل نہیں ہوتا۔",
+      note_jsbl: "{b} کو برانچ کوڈ مانا گیا؛ جے ایس بینک کے IBAN میں یہ اکاؤنٹ نمبر سے پہلے آتا ہے۔",
       ablNeed16: "الائیڈ بینک کے IBAN میں 16 ہندسوں کا اکاؤنٹ نمبر ہوتا ہے (عموماً 0010 سے شروع)، یا شروع میں برانچ کوڈ کے ساتھ 20 ہندسے۔ یہ myABL ایپ یا چیک بک پر دیکھیں۔",
+      bahlNeed17: "بینک الحبیب کا اکاؤنٹ نمبر 17 ہندسوں کا ہوتا ہے، جیسے 1234-0081-012345-01-2۔ براہِ کرم پورا نمبر لکھیں۔",
+      alfhFmt: "بینک الفلاح کا اکاؤنٹ نمبر 4 ہندسوں کے برانچ کوڈ اور 10 ہندسوں کے ساتھ (کل 14) لکھیں، یا ایپ والا 16 ہندسوں کا نمبر۔",
+      ublFmt: "یو بی ایل ایپ والا 12 یا 16 ہندسوں کا اکاؤنٹ نمبر لکھیں۔ پرانے 13 ہندسوں والے نمبر سے IBAN درست نہیں بن سکتا۔",
+      jsblFmt: "جے ایس بینک کا 4 ہندسوں کا برانچ کوڈ اور پھر اکاؤنٹ نمبر لکھیں۔",
+      meznNeedBranch: "میزان بینک کا اکاؤنٹ نمبر 14 ہندسوں کا ہوتا ہے: 4 ہندسوں کا برانچ کوڈ اور پھر 10 ہندسے۔ براہِ کرم شروع میں برانچ کوڈ لگائیں۔",
+      soneNeedBranch: "سونیری بینک کا اکاؤنٹ نمبر 15 ہندسوں کا ہوتا ہے: 4 ہندسوں کا برانچ کوڈ اور پھر 11 ہندسے۔ براہِ کرم شروع میں برانچ کوڈ لگائیں۔",
+      unsupported: "یہ بینک IBAN ایسے بناتا ہے کہ اکاؤنٹ نمبر سے حساب نہیں لگایا جا سکتا۔ براہِ کرم اپنی بینک ایپ یا سٹیٹمنٹ سے IBAN کاپی کریں۔",
       tooLongBank: "یہ اکاؤنٹ نمبر 16 ہندسوں سے لمبا ہے اور اس بینک کا IBAN فارمیٹ معلوم نہیں، اس لیے ہم اسے محفوظ طریقے سے نہیں بنا سکتے۔ براہِ کرم اپنی بینک ایپ یا سٹیٹمنٹ سے IBAN کاپی کریں۔",
       acctOk: "IBAN بن گیا۔ براہِ کرم نیچے دی گئی ہدایت کے مطابق تصدیق کر لیں۔",
       outIban: "IBAN", copy: "کاپی", copied: "کاپی ہو گیا!", makeQr: "اس IBAN سے QR بنائیں ←",
@@ -105,25 +123,6 @@
   function clean(s) { return s.replace(/[\s-]/g, "").toUpperCase(); }
   function group(s) { return s.replace(/(.{4})/g, "$1 ").trim(); }
 
-  function mod97(s) {
-    var r = 0;
-    for (var i = 0; i < s.length; i++) {
-      var d = parseInt(s[i], 36).toString();
-      for (var j = 0; j < d.length; j++) r = (r * 10 + +d[j]) % 97;
-    }
-    return r;
-  }
-
-  function validIban(iban) {
-    return /^PK\d{2}[A-Z]{4}[A-Z0-9]{16}$/.test(iban) && mod97(iban.slice(4) + iban.slice(0, 4)) === 1;
-  }
-
-  function buildIban(code, acct) {
-    var bban = code + ("0000000000000000" + acct).slice(-16);
-    var check = 98 - mod97(bban + "PK00");
-    return "PK" + (check < 10 ? "0" : "") + check + bban;
-  }
-
   function fillBanks() {
     var sel = $("bankSel"), cur = sel.value;
     sel.textContent = "";
@@ -142,8 +141,6 @@
     sel.value = cur;
   }
 
-  var BRANCH_PLUS_16 = ["ABPA", "FWOM"];
-
   function convert() {
     var acct = clean($("acct").value), code = $("bankSel").value, msg = $("acctMsg"), out = $("out1");
     $("acctCount").textContent = acct.length + " / 16";
@@ -151,24 +148,22 @@
     msg.className = "hint";
     $("acct").classList.remove("bad", "good");
 
-    function fail(key) { msg.className = "hint err"; msg.textContent = tr(key); $("acct").classList.add("bad"); }
-
     if (!acct) { msg.textContent = tr("acctHint"); return; }
-    if (!/^[A-Z0-9]+$/.test(acct)) return fail("acctBad");
     if (!code) { msg.textContent = tr(acct.length > 16 ? "acctNeedBankLong" : "acctNeedBank"); return; }
 
-    var note = "";
-    if (BRANCH_PLUS_16.indexOf(code) >= 0 && acct.length === 20) {
-      note = tr("noteBranch").replace("{b}", acct.slice(0, 4));
-      acct = acct.slice(4);
+    var r = IbanRules.toIban(code, acct);
+    if (r.err) {
+      msg.className = "hint err";
+      msg.textContent = tr(r.err);
+      $("acct").classList.add("bad");
+      return;
     }
-    if (code === "ABPA" && acct.length !== 16) return fail("ablNeed16");
-    if (acct.length > 16) return fail("tooLongBank");
 
-    var iban = buildIban(code, acct);
+    var note = r.note ? tr("note_" + r.note).replace("{b}", r.branch || "") + " " : "";
     $("acct").classList.add("good");
     msg.className = "hint good";
-    msg.textContent = (note ? note + " " : "") + tr("acctOk");
+    msg.textContent = note + tr("acctOk");
+    var iban = r.iban;
     $("ibanOut").textContent = group(iban);
     $("makeQr").href = "/#iban=" + iban;
     out.hidden = false;
@@ -184,7 +179,7 @@
     if (!iban) { msg.textContent = tr("ibanEmpty"); return; }
     if (iban.length < 24) { msg.textContent = tr("ibanRem").replace("{n}", 24 - iban.length); return; }
     if (!/^PK\d{2}[A-Z]{4}[A-Z0-9]{16}$/.test(iban)) { msg.className = "hint err"; msg.textContent = tr("ibanBadFmt"); el.classList.add("bad"); return; }
-    if (!validIban(iban)) { msg.className = "hint err"; msg.textContent = tr("ibanBadSum"); el.classList.add("bad"); return; }
+    if (!IbanRules.validIban(iban)) { msg.className = "hint err"; msg.textContent = tr("ibanBadSum"); el.classList.add("bad"); return; }
 
     var code = iban.slice(4, 8);
     el.classList.add("good");
