@@ -27,7 +27,10 @@
       h1a: "Account number ⇄ IBAN ", h1b: "for any Pakistani bank.",
       lead: "Turn your account number into an IBAN, or look inside an IBAN to see the bank and account number. Then make a payment QR with one tap.",
       c1Title: "Account number → IBAN", lblBank: "Bank or wallet", lblAcct: "Account number",
-      choose: "Choose your bank…", groupBanks: "Banks", groupWallets: "Wallets & digital banks",
+      choose: "Search bank or wallet, e.g. Meezan…",
+      pickFromList: "Pick your bank from the suggestions under the search box.",
+      jazzcashNoGen: "JazzCash IBANs contain 6 digits that are different for every account, so they can't be made from your mobile number. Open the JazzCash app → My Account → View Profile and copy your IBAN.",
+      easypaisaMobile: "easypaisa IBANs use your easypaisa account number, not your mobile number. Open the easypaisa app → My Account and copy your IBAN (or enter the account number shown there).", groupBanks: "Banks", groupWallets: "Wallets & digital banks",
       acctHint: "Type it exactly as your bank shows it, including any branch code. Spaces and dashes are ignored.",
       acctBad: "Only letters and numbers are allowed.",
       acctNeedBank: "Now choose your bank above.",
@@ -75,7 +78,10 @@
       h1a: "اکاؤنٹ نمبر ⇄ IBAN ", h1b: "کسی بھی پاکستانی بینک کے لیے۔",
       lead: "اپنا اکاؤنٹ نمبر IBAN میں بدلیں، یا کسی IBAN سے بینک اور اکاؤنٹ نمبر معلوم کریں۔ پھر ایک کلک میں ادائیگی QR بنائیں۔",
       c1Title: "اکاؤنٹ نمبر ← IBAN", lblBank: "بینک یا والٹ", lblAcct: "اکاؤنٹ نمبر",
-      choose: "اپنا بینک منتخب کریں…", groupBanks: "بینک", groupWallets: "والٹس اور ڈیجیٹل بینک",
+      choose: "بینک یا والٹ تلاش کریں، مثلاً Meezan…",
+      pickFromList: "تلاش کے خانے کے نیچے دی گئی فہرست سے اپنا بینک منتخب کریں۔",
+      jazzcashNoGen: "جاز کیش کے IBAN میں 6 ہندسے ہر اکاؤنٹ کے لیے مختلف ہوتے ہیں، اس لیے یہ موبائل نمبر سے نہیں بن سکتا۔ جاز کیش ایپ کھولیں ← My Account ← View Profile اور اپنا IBAN کاپی کریں۔",
+      easypaisaMobile: "ایزی پیسہ کا IBAN آپ کے ایزی پیسہ اکاؤنٹ نمبر سے بنتا ہے، موبائل نمبر سے نہیں۔ ایزی پیسہ ایپ کھولیں ← My Account اور اپنا IBAN کاپی کریں (یا وہاں دیا گیا اکاؤنٹ نمبر لکھیں)۔", groupBanks: "بینک", groupWallets: "والٹس اور ڈیجیٹل بینک",
       acctHint: "اکاؤنٹ نمبر بالکل ویسا ہی لکھیں جیسا بینک دکھاتا ہے، برانچ کوڈ سمیت۔ خالی جگہ اور ڈیش کو نظرانداز کیا جاتا ہے۔",
       acctBad: "صرف حروف اور ہندسے لکھیں۔",
       acctNeedBank: "اب اوپر سے اپنا بینک منتخب کریں۔",
@@ -124,32 +130,34 @@
   function group(s) { return s.replace(/(.{4})/g, "$1 ").trim(); }
 
   function fillBanks() {
-    var sel = $("bankSel"), cur = sel.value;
-    sel.textContent = "";
-    var o = document.createElement("option");
-    o.value = ""; o.textContent = tr("choose");
-    sel.appendChild(o);
-    var gB = document.createElement("optgroup"), gW = document.createElement("optgroup");
-    gB.label = tr("groupBanks"); gW.label = tr("groupWallets");
+    var list = $("bankList");
+    list.textContent = "";
+    $("bankSel").placeholder = tr("choose");
     BANK_LIST.forEach(function (b) {
       var op = document.createElement("option");
-      op.value = b[0];
-      op.textContent = b[1] + " (" + b[0] + ")";
-      (["SADA", "JCMA", "TMFB"].indexOf(b[0]) >= 0 ? gW : gB).appendChild(op);
+      op.value = b[1] + " (" + b[0] + ")";
+      list.appendChild(op);
     });
-    sel.appendChild(gB); sel.appendChild(gW);
-    sel.value = cur;
+  }
+
+  function bankCode() {
+    var v = $("bankSel").value.trim(), m = /\(([A-Z]{4})\)$/.exec(v), up = v.toUpperCase();
+    if (m && NAMES[m[1]]) return m[1];
+    if (NAMES[up]) return up;
+    for (var i = 0; i < BANK_LIST.length; i++) if (BANK_LIST[i][1].toUpperCase() === up) return BANK_LIST[i][0];
+    return "";
   }
 
   function convert() {
-    var acct = clean($("acct").value), code = $("bankSel").value, msg = $("acctMsg"), out = $("out1");
+    var acct = clean($("acct").value), code = bankCode(), msg = $("acctMsg"), out = $("out1");
+    $("bankSel").classList.toggle("good", !!code);
     $("acctCount").textContent = acct.length + " / 16";
     out.hidden = true;
     msg.className = "hint";
     $("acct").classList.remove("bad", "good");
 
     if (!acct) { msg.textContent = tr("acctHint"); return; }
-    if (!code) { msg.textContent = tr(acct.length > 16 ? "acctNeedBankLong" : "acctNeedBank"); return; }
+    if (!code) { msg.textContent = tr($("bankSel").value.trim() ? "pickFromList" : acct.length > 16 ? "acctNeedBankLong" : "acctNeedBank"); return; }
 
     var r = IbanRules.toIban(code, acct);
     if (r.err) {
@@ -217,7 +225,9 @@
     try { localStorage.setItem("rq-theme", mode); } catch (e) {}
   });
 
+  $("bankSel").addEventListener("input", convert);
   $("bankSel").addEventListener("change", convert);
+  $("bankSel").addEventListener("focus", function () { this.select(); });
   $("acct").addEventListener("input", convert);
   $("ibanIn").addEventListener("input", decode);
   $("ibanIn").addEventListener("blur", function () { var c = clean(this.value); if (c) this.value = group(c); });

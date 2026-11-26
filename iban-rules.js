@@ -70,6 +70,8 @@
       if (a.length === 14) return { bban: pad(a.slice(4), 16), note: "branch", branch: a.slice(0, 4) };
       return null;
     },
+    JCMA: function (a) { return a.length === 16 ? { bban: a } : { err: "jazzcashNoGen" }; },
+    TMFB: function (a) { return /^0?3\d{9}$/.test(a) ? { err: "easypaisaMobile" } : null; },
     MPBL: function (a) { return a.length === 16 ? { bban: a } : { err: "unsupported" }; },
     KHBL: function (a) { return a.length === 16 ? { bban: a } : { err: "unsupported" }; }
   };

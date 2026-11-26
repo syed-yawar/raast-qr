@@ -66,8 +66,12 @@ var V = [
   ["UMBL", "0203600017080108", "PK86UMBL0203600017080108", "ok"],
   ["MPBL", "6-2-25-20610-714-113599", "PK23MPBL0225017140113599", "refuse"],
   ["MPBL", "6-99-81-29314-714-109745", "PK21MPBL9981477140109745", "refuse"],
-  ["KHBL", "329-200345-8547", "PK62KHBL0000012003458547", "refuse"]
+  ["KHBL", "329-200345-8547", "PK62KHBL0000012003458547", "refuse"],
+  ["JCMA", "03498189289", "PK89JCMA0207923498189289", "refuse"]
 ];
+
+// Wallet mobile numbers can't be turned into an IBAN, so these must be refused.
+var REFUSE = [["JCMA", "03001234567"], ["TMFB", "03001234567"], ["TMFB", "3001234567"]];
 
 var pass = 0, fail = 0, badData = 0;
 V.forEach(function (v) {
@@ -77,5 +81,9 @@ V.forEach(function (v) {
   var ok = expect === "ok" ? r.iban === want : !!r.err;
   if (ok) pass++; else { fail++; console.log("FAIL", code, acct, "want", want, "got", r.iban || r.err); }
 });
-console.log(pass + " passed, " + fail + " failed, " + badData + " bad published IBANs, " + V.length + " total");
+REFUSE.forEach(function (w) {
+  var r = R.toIban(w[0], w[1]);
+  if (r.err) pass++; else { fail++; console.log("FAIL", w[0], w[1], "should refuse, got", r.iban); }
+});
+console.log(pass + " passed, " + fail + " failed, " + badData + " bad published IBANs, " + (V.length + REFUSE.length) + " total");
 process.exit(fail ? 1 : 0);
