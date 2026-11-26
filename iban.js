@@ -29,9 +29,12 @@
       c1Title: "Account number → IBAN", lblBank: "Bank or wallet", lblAcct: "Account number",
       choose: "Choose your bank…", groupBanks: "Banks", groupWallets: "Wallets & digital banks",
       acctHint: "Type it exactly as your bank shows it, including any branch code. Spaces and dashes are ignored.",
-      acctTooLong: "Too long — Pakistani account numbers fit in 16 characters. Remove any extra prefix.",
       acctBad: "Only letters and numbers are allowed.",
       acctNeedBank: "Now choose your bank above.",
+      acctNeedBankLong: "Choose your bank above. Some banks (like Allied Bank) show a branch code in front, which we can remove for you.",
+      noteBranch: "Removed the branch code ({b}); the IBAN uses the 16-digit account number.",
+      ablNeed16: "Allied Bank IBANs use your 16-digit account number (usually starts with 0010), or 20 digits with the branch code in front. Find it in the myABL app or on your cheque book.",
+      tooLongBank: "This account number is longer than 16 digits, and this bank's IBAN format isn't documented, so we can't calculate it safely. Please copy the IBAN from your bank app or statement.",
       acctOk: "IBAN calculated. Please double-check it (see below).",
       outIban: "IBAN", copy: "Copy", copied: "Copied!", makeQr: "Make QR with this IBAN →",
       warnB: "Always double-check.",
@@ -65,9 +68,12 @@
       c1Title: "اکاؤنٹ نمبر ← IBAN", lblBank: "بینک یا والٹ", lblAcct: "اکاؤنٹ نمبر",
       choose: "اپنا بینک منتخب کریں…", groupBanks: "بینک", groupWallets: "والٹس اور ڈیجیٹل بینک",
       acctHint: "اکاؤنٹ نمبر بالکل ویسا ہی لکھیں جیسا بینک دکھاتا ہے، برانچ کوڈ سمیت۔ خالی جگہ اور ڈیش کو نظرانداز کیا جاتا ہے۔",
-      acctTooLong: "بہت لمبا ہے — پاکستانی اکاؤنٹ نمبر 16 حروف تک ہوتا ہے۔ اضافی حصہ ہٹا دیں۔",
       acctBad: "صرف حروف اور ہندسے لکھیں۔",
       acctNeedBank: "اب اوپر سے اپنا بینک منتخب کریں۔",
+      acctNeedBankLong: "اوپر سے اپنا بینک منتخب کریں۔ کچھ بینک (جیسے الائیڈ بینک) شروع میں برانچ کوڈ دکھاتے ہیں، جسے ہم خود ہٹا دیں گے۔",
+      noteBranch: "برانچ کوڈ ({b}) ہٹا دیا گیا؛ IBAN میں 16 ہندسوں کا اکاؤنٹ نمبر استعمال ہوتا ہے۔",
+      ablNeed16: "الائیڈ بینک کے IBAN میں 16 ہندسوں کا اکاؤنٹ نمبر ہوتا ہے (عموماً 0010 سے شروع)، یا شروع میں برانچ کوڈ کے ساتھ 20 ہندسے۔ یہ myABL ایپ یا چیک بک پر دیکھیں۔",
+      tooLongBank: "یہ اکاؤنٹ نمبر 16 ہندسوں سے لمبا ہے اور اس بینک کا IBAN فارمیٹ معلوم نہیں، اس لیے ہم اسے محفوظ طریقے سے نہیں بنا سکتے۔ براہِ کرم اپنی بینک ایپ یا سٹیٹمنٹ سے IBAN کاپی کریں۔",
       acctOk: "IBAN بن گیا۔ براہِ کرم نیچے دی گئی ہدایت کے مطابق تصدیق کر لیں۔",
       outIban: "IBAN", copy: "کاپی", copied: "کاپی ہو گیا!", makeQr: "اس IBAN سے QR بنائیں ←",
       warnB: "ہمیشہ تصدیق کریں۔",
@@ -136,6 +142,8 @@
     sel.value = cur;
   }
 
+  var BRANCH_PLUS_16 = ["ABPA", "FWOM"];
+
   function convert() {
     var acct = clean($("acct").value), code = $("bankSel").value, msg = $("acctMsg"), out = $("out1");
     $("acctCount").textContent = acct.length + " / 16";
@@ -143,15 +151,24 @@
     msg.className = "hint";
     $("acct").classList.remove("bad", "good");
 
+    function fail(key) { msg.className = "hint err"; msg.textContent = tr(key); $("acct").classList.add("bad"); }
+
     if (!acct) { msg.textContent = tr("acctHint"); return; }
-    if (!/^[A-Z0-9]+$/.test(acct)) { msg.className = "hint err"; msg.textContent = tr("acctBad"); $("acct").classList.add("bad"); return; }
-    if (acct.length > 16) { msg.className = "hint err"; msg.textContent = tr("acctTooLong"); $("acct").classList.add("bad"); return; }
-    if (!code) { msg.textContent = tr("acctNeedBank"); return; }
+    if (!/^[A-Z0-9]+$/.test(acct)) return fail("acctBad");
+    if (!code) { msg.textContent = tr(acct.length > 16 ? "acctNeedBankLong" : "acctNeedBank"); return; }
+
+    var note = "";
+    if (BRANCH_PLUS_16.indexOf(code) >= 0 && acct.length === 20) {
+      note = tr("noteBranch").replace("{b}", acct.slice(0, 4));
+      acct = acct.slice(4);
+    }
+    if (code === "ABPA" && acct.length !== 16) return fail("ablNeed16");
+    if (acct.length > 16) return fail("tooLongBank");
 
     var iban = buildIban(code, acct);
     $("acct").classList.add("good");
     msg.className = "hint good";
-    msg.textContent = tr("acctOk");
+    msg.textContent = (note ? note + " " : "") + tr("acctOk");
     $("ibanOut").textContent = group(iban);
     $("makeQr").href = "/#iban=" + iban;
     out.hidden = false;
