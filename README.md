@@ -39,6 +39,8 @@ Static assets on Cloudflare Workers:
 npx wrangler deploy
 ```
 
+Deploy runs `scripts/build.mjs` first, which copies the site to `dist/` and adds a content hash to every JS/CSS link (`app.js?v=…`). Those files are served with a one-year `immutable` cache (see `_headers`); HTML is always revalidated, so a new deploy is picked up immediately.
+
 ## Notes
 
 - A calculated IBAN can pass the checksum and still be wrong if a bank uses a non-standard account format. Always verify in your bank app before printing.
