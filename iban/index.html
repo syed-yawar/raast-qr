@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; manifest-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Account Number to IBAN Converter Pakistan — All Banks</title>
+<meta name="description" content="Convert a Pakistani account number to IBAN, or find the bank and account number in an IBAN. HBL, Meezan, UBL, MCB, JazzCash, Easypaisa. Free and private.">
+<meta name="keywords" content="account number to IBAN Pakistan, IBAN generator Pakistan, IBAN calculator, HBL IBAN, Meezan IBAN, UBL IBAN, MCB IBAN, IBAN to account number, IBAN checker Pakistan, اکاؤنٹ نمبر سے IBAN">
+<meta name="author" content="Yawar">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#065f46">
+<link rel="canonical" href="https://raast-qr.syedyawar.com/iban/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Raast QR">
+<meta property="og:url" content="https://raast-qr.syedyawar.com/iban/">
+<meta property="og:title" content="Account Number ⇄ IBAN Converter for Pakistani Banks">
+<meta property="og:description" content="Convert a Pakistani account number to IBAN or check an IBAN. Free, private, works with all banks and wallets.">
+<meta property="og:image" content="https://raast-qr.syedyawar.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Account number to IBAN converter for Pakistani banks">
+<meta property="og:locale" content="en_PK">
+<meta property="og:locale:alternate" content="ur_PK">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Account Number ⇄ IBAN Converter for Pakistani Banks">
+<meta name="twitter:description" content="Convert a Pakistani account number to IBAN or check an IBAN. Free and private.">
+<meta name="twitter:image" content="https://raast-qr.syedyawar.com/og-image.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Pakistan Account Number to IBAN Converter",
+      "url": "https://raast-qr.syedyawar.com/iban/",
+      "description": "Free browser-only tool to convert a Pakistani bank account number to IBAN and to decode an IBAN into its bank and account number.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Any",
+      "inLanguage": ["en", "ur"],
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "PKR" },
+      "areaServed": { "@type": "Country", "name": "Pakistan" },
+      "isPartOf": { "@id": "https://raast-qr.syedyawar.com/#app" },
+      "author": { "@type": "Person", "name": "Yawar", "url": "https://syedyawar.com" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How is a Pakistani IBAN made from an account number?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A Pakistani IBAN is 24 characters: PK, two check digits, the bank's 4-letter code, and the 16-character account number padded with leading zeros. The check digits are calculated with the ISO 13616 mod-97 method." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is a converted IBAN always correct?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Not always. Some banks include branch codes or use a different internal format, so a calculated IBAN can pass the checksum and still be wrong. Always confirm by checking the IBAN in your bank app, or by scanning a QR from another app and checking that your own name appears." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script src="/theme.js"></script>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="bg-layer" aria-hidden="true"></div>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="brand" href="/">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          <path d="M14 14h3v3h-3zM20 14v3M14 20h6"/>
+        </svg>
+      </span>
+      <span class="brand-name">Raast QR</span>
+      <span class="tag" data-i18n="navTag">Open Source</span>
+    </a>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="/" data-i18n="navGen">QR generator</a>
+        <a href="#how" data-i18n="navHowIban">How IBANs work</a>
+      </div>
+      <div class="nav-tools">
+        <button id="langBtn" class="tool-btn lang-btn" type="button" aria-label="Switch language"><span id="langLabel">اردو</span></button>
+        <button id="themeBtn" class="tool-btn icon-btn" type="button" aria-label="Toggle night mode" title="Toggle night mode">
+          <svg class="i-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="i-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        </button>
+        <a class="gh-btn" href="https://github.com/syed-yawar/raast-qr" rel="noopener" target="_blank">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.6-4-1.6-.6-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z"/></svg>
+          <span data-i18n="navGh">GitHub</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="badge"><span class="dot" aria-hidden="true"></span><span data-i18n="badge">Free tool · Runs in your browser</span></div>
+  <h1><span data-i18n="h1a">Account number ⇄ IBAN </span><span class="accent" data-i18n="h1b">for any Pakistani bank.</span></h1>
+  <p class="lead" data-i18n="lead">Turn your account number into an IBAN, or look inside an IBAN to see the bank and account number. Then make a payment QR with one tap.</p>
+</header>
+
+<main class="tool-grid">
+  <section class="controls">
+    <div class="controls-head">
+      <h2 data-i18n="c1Title">Account number → IBAN</h2>
+    </div>
+    <div class="group">
+      <div class="label-row"><label for="bankSel"><span class="step-num">1</span> <span data-i18n="lblBank">Bank or wallet</span></label></div>
+      <select id="bankSel" class="sel"></select>
+    </div>
+    <div class="group">
+      <div class="label-row">
+        <label for="acct"><span class="step-num">2</span> <span data-i18n="lblAcct">Account number</span></label>
+        <span id="acctCount" class="count" dir="ltr">0 / 16</span>
+      </div>
+      <input id="acct" class="txt mono" dir="ltr" inputmode="text" maxlength="24" placeholder="0123 4567 8901 23" spellcheck="false" autocomplete="off">
+      <p id="acctMsg" class="hint" aria-live="polite" data-i18n="acctHint">Type it exactly as your bank shows it, including any branch code. Spaces and dashes are ignored.</p>
+    </div>
+
+    <div id="out1" class="out-box" hidden>
+      <span class="out-k" data-i18n="outIban">IBAN</span>
+      <strong id="ibanOut" class="out-v mono" dir="ltr"></strong>
+      <div class="out-actions">
+        <button id="copyIban" class="btn secondary sm" type="button" data-i18n="copy">Copy</button>
+        <a id="makeQr" class="btn primary sm" href="/" data-i18n="makeQr">Make QR with this IBAN →</a>
+      </div>
+    </div>
+
+    <div class="warn-box">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <p><b data-i18n="warnB">Always double-check.</b> <span data-i18n="warnT">Some banks build IBANs with extra branch or product codes, so a calculated IBAN can look valid and still be wrong. Compare it with the IBAN in your bank app, or scan the QR from another app and make sure your own name appears before you print it.</span></p>
+    </div>
+  </section>
+
+  <section class="controls">
+    <div class="controls-head">
+      <h2 data-i18n="c2Title">IBAN → bank &amp; account</h2>
+    </div>
+    <div class="group">
+      <div class="label-row">
+        <label for="ibanIn"><span class="step-num">1</span> <span data-i18n="lblIban">IBAN</span></label>
+        <span id="ibanCount" class="count" dir="ltr">0 / 24</span>
+      </div>
+      <input id="ibanIn" class="txt mono" dir="ltr" maxlength="34" placeholder="PK00 SADA 0000 0000 0000 0000" spellcheck="false" autocomplete="off">
+      <p id="ibanMsg" class="hint" aria-live="polite"></p>
+    </div>
+
+    <div id="out2" class="out-list" hidden>
+      <div class="out-row"><span class="out-k" data-i18n="rBank">Bank</span><strong id="rBank"></strong></div>
+      <div class="out-row"><span class="out-k" data-i18n="rCode">Bank code</span><strong id="rCode" class="mono" dir="ltr"></strong></div>
+      <div class="out-row"><span class="out-k" data-i18n="rAcct">Account number</span><strong id="rAcct" class="mono" dir="ltr"></strong></div>
+      <div class="out-row"><span class="out-k" data-i18n="rCheck">Checksum</span><strong id="rCheck"></strong></div>
+      <p class="hint small" data-i18n="rNote">Account number is shown without leading zeros. Your bank may format it with dashes or a branch prefix.</p>
+      <a id="makeQr2" class="btn primary sm" href="/" data-i18n="makeQr">Make QR with this IBAN →</a>
+    </div>
+  </section>
+</main>
+
+<section class="section" id="how">
+  <div class="sec-head">
+    <span class="eyebrow" data-i18n="howEyebrow">How it works</span>
+    <h2 data-i18n="howTitle">What's inside a Pakistani IBAN</h2>
+  </div>
+  <div class="iban-anatomy" dir="ltr">
+    <div class="seg"><b>PK</b><span data-i18n="segCountry">Country</span></div>
+    <div class="seg"><b>36</b><span data-i18n="segCheck">Check digits</span></div>
+    <div class="seg"><b>SCBL</b><span data-i18n="segBank">Bank code</span></div>
+    <div class="seg wide"><b>0000001123456702</b><span data-i18n="segAcct">Account number, padded to 16</span></div>
+  </div>
+  <div class="steps">
+    <article class="step-card"><h3 data-i18n="k1t">24 characters, always</h3><p data-i18n="k1d">Every Pakistani IBAN is exactly 24 characters and starts with PK. The State Bank of Pakistan made IBANs mandatory for all accounts.</p></article>
+    <article class="step-card"><h3 data-i18n="k2t">Check digits catch typos</h3><p data-i18n="k2d">The 2 digits after PK are calculated from the rest using the ISO 13616 mod-97 method. One wrong character and the IBAN fails the check.</p></article>
+    <article class="step-card"><h3 data-i18n="k3t">Zero-padded account number</h3><p data-i18n="k3d">The last 16 characters are your account number with leading zeros. Some banks also include a branch or product code here.</p></article>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="foot-bottom">
+    <p><span data-i18n="footMade">Built with care by</span> <a href="https://syedyawar.com" rel="noopener" target="_blank">Yawar</a> · <a href="/" data-i18n="navGen">QR generator</a> · <a href="https://github.com/syed-yawar/raast-qr" rel="noopener" target="_blank" data-i18n="footSrc">Source code</a></p>
+    <p data-i18n="footDisc">Independent open-source tool — not affiliated with the State Bank of Pakistan, Raast, or any bank.</p>
+  </div>
+</footer>
+
+<script src="/iban.js"></script>
+</body>
+</html>
